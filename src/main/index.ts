@@ -1,6 +1,7 @@
-import { app, shell, BrowserWindow } from 'electron'
+import { electronApp, is, optimizer } from '@electron-toolkit/utils'
+import { BrowserWindow, app, shell } from 'electron'
 import { join } from 'path'
-import { electronApp, optimizer, is } from '@electron-toolkit/utils'
+import { UiohookKey, uIOhook } from 'uiohook-napi'
 import icon from '../../resources/icon.png?asset'
 
 const is_mac = process.platform === 'darwin'
@@ -48,6 +49,17 @@ function createWindow(): void {
     return { action: 'deny' }
   })
 
+  uIOhook.on('keydown', (e) => {
+    const enumKey = Object.values(UiohookKey).indexOf(e.keycode)
+
+    const key = Object.keys(UiohookKey)[enumKey]
+
+    console.log('Tecla :', key)
+
+    mainWindow.webContents.send('keydown', key)
+  })
+
+  uIOhook.start()
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
