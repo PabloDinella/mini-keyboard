@@ -3,13 +3,30 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
+const is_mac = process.platform === 'darwin'
+if (is_mac) {
+  app.dock.hide() // - 1 -
+}
+
+const WIDTH = 200
+const HEIGHT = 100
+
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
-    show: false,
+    width: WIDTH,
+    height: HEIGHT,
+    maxWidth: WIDTH,
+    maxHeight: HEIGHT,
     autoHideMenuBar: true,
+    maximizable: false,
+    minimizable: false,
+    resizable: false,
+    alwaysOnTop: true,
+    frame: false,
+    transparent: true,
+    center: true,
+    hasShadow: false,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
@@ -18,7 +35,9 @@ function createWindow(): void {
   })
 
   mainWindow.setAlwaysOnTop(true, 'screen-saver')
-  mainWindow.setVisibleOnAllWorkspaces(true)
+  mainWindow.setVisibleOnAllWorkspaces(true, {
+    visibleOnFullScreen: true
+  })
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
