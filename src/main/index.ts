@@ -9,7 +9,7 @@ if (is_mac) {
   app.dock.hide() // - 1 -
 }
 
-const WIDTH = 200
+const WIDTH = 900
 const HEIGHT = 100
 
 function createWindow(): void {
@@ -54,9 +54,10 @@ function createWindow(): void {
 
     const key = Object.keys(UiohookKey)[enumKey]
 
-    console.log('Tecla :', key)
-
-    mainWindow.webContents.send('keydown', key)
+    mainWindow.webContents.send('keydown', {
+      key,
+      ...e
+    })
   })
 
   uIOhook.start()
