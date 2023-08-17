@@ -5,6 +5,8 @@ body {
     'Ubuntu', 'Cantarell', 'Open Sans', sans-serif;
   color: #86a5b1;
   background-color: transparent;
+  -webkit-app-region: drag;
+  pointer-events: none;
 }
 
 * {

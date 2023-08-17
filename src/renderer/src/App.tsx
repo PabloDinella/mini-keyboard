@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react'
 import { UiohookKeyboardEvent } from 'uiohook-napi'
 
 function App(): JSX.Element {
-  const [key, setKey] = useState<JSX.Element[]>([])
+  const [pressedKeys, setPressedKeys] = useState<JSX.Element[]>([])
 
   useEffect(() => {
     window.electron.ipcRenderer.on(
-      'keydown',
+      'uihooks-keydown',
       (_, event: UiohookKeyboardEvent & { key: string }) => {
         const ctrlKey = event.ctrlKey ? 'Ctrl' : ''
         const altKey = event.altKey ? 'Alt' : ''
@@ -14,6 +14,8 @@ function App(): JSX.Element {
         const metaKey = event.metaKey ? 'Meta' : ''
 
         const shortcutText = ctrlKey + altKey + shiftKey + metaKey
+
+        console.log(event)
 
         const UiohookKey = window.uiHook.UiohookKey
 
@@ -31,17 +33,15 @@ function App(): JSX.Element {
           <kbd>{event.key}</kbd>
         ) : (
           <>
-            {shortcutText && (
-              <kbd>
-                {shortcutText}-{event.key}
-              </kbd>
-            )}
+            {/* {shortcutText && <kbd>{event.key}</kbd>} */}
 
-            {!shortcutText && <strong>{event.key}</strong>}
+            {/* {!shortcutText && <strong>{event.key}</strong>} */}
+
+            <strong>{event.key}</strong>
           </>
         )
 
-        setKey((prevKeys) => {
+        setPressedKeys((prevKeys) => {
           if (prevKeys.length > 10) {
             return [...prevKeys.slice(1), key]
           }
@@ -50,9 +50,11 @@ function App(): JSX.Element {
         })
       }
     )
+
+    return () => window.electron.ipcRenderer.removeAllListeners('uihooks-keydown')
   }, [])
 
-  return <div className="container">{key}</div>
+  return <div className="container">{pressedKeys}</div>
 }
 
 export default App

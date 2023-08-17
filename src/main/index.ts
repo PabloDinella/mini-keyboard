@@ -39,6 +39,7 @@ function createWindow(): void {
   mainWindow.setVisibleOnAllWorkspaces(true, {
     visibleOnFullScreen: true
   })
+  // mainWindow.setIgnoreMouseEvents(true)
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
@@ -54,7 +55,9 @@ function createWindow(): void {
 
     const key = Object.keys(UiohookKey)[enumKey]
 
-    mainWindow.webContents.send('keydown', {
+    console.log('key', key)
+
+    mainWindow.webContents.send('uihooks-keydown', {
       key,
       ...e
     })
